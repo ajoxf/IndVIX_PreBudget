@@ -40,15 +40,15 @@ def encode_image_to_base64(image_path: str) -> str:
 
 
 def get_trend_indicator(value: float) -> tuple:
-    """Return trend indicator emoji and color based on value."""
+    """Return trend indicator and color based on value."""
     if value > 5:
-        return "▲", "#dc3545", "Strong Increase"
+        return "UP", "#dc3545", "Strong Increase"
     elif value > 0:
-        return "▲", "#fd7e14", "Moderate Increase"
+        return "UP", "#fd7e14", "Moderate Increase"
     elif value > -5:
-        return "▼", "#28a745", "Moderate Decrease"
+        return "DOWN", "#28a745", "Moderate Decrease"
     else:
-        return "▼", "#20c997", "Strong Decrease"
+        return "DOWN", "#20c997", "Strong Decrease"
 
 
 def format_percentage(value: float, include_sign: bool = True) -> str:
@@ -82,15 +82,13 @@ def generate_executive_summary(results_df: pd.DataFrame, summaries: dict) -> str
         <h2>Executive Summary</h2>
         <div class="summary-grid">
             <div class="summary-card highlight">
-                <div class="card-icon">📊</div>
                 <div class="card-content">
                     <span class="card-label">Average Pre-Budget VIX Change</span>
-                    <span class="card-value" style="color: {trend_color};">{trend_icon} {avg_total_change:+.1f}%</span>
+                    <span class="card-value" style="color: {trend_color};">{avg_total_change:+.1f}%</span>
                     <span class="card-subtitle">{trend_text} Pattern</span>
                 </div>
             </div>
             <div class="summary-card">
-                <div class="card-icon">📈</div>
                 <div class="card-content">
                     <span class="card-label">Maximum Spike Observed</span>
                     <span class="card-value text-danger">{max_change:+.1f}%</span>
@@ -98,7 +96,6 @@ def generate_executive_summary(results_df: pd.DataFrame, summaries: dict) -> str
                 </div>
             </div>
             <div class="summary-card">
-                <div class="card-icon">📉</div>
                 <div class="card-content">
                     <span class="card-label">Minimum Change Observed</span>
                     <span class="card-value text-success">{min_change:+.1f}%</span>
@@ -106,7 +103,6 @@ def generate_executive_summary(results_df: pd.DataFrame, summaries: dict) -> str
                 </div>
             </div>
             <div class="summary-card">
-                <div class="card-icon">✓</div>
                 <div class="card-content">
                     <span class="card-label">Consistency Rate</span>
                     <span class="card-value">{100*positive_count/total_budgets:.0f}%</span>
@@ -116,7 +112,7 @@ def generate_executive_summary(results_df: pd.DataFrame, summaries: dict) -> str
         </div>
 
         <div class="key-insight">
-            <h3>🔑 Key Insight</h3>
+            <h3>Key Insight</h3>
             <p>Over the past 10 years, <strong>India VIX consistently rises in the 4 weeks leading up to Union Budget announcements</strong>.
             The average increase is <strong>{avg_total_change:.1f}%</strong>, with the most significant volatility spike occurring
             <strong>2-3 weeks before</strong> the budget date. This pattern suggests heightened market uncertainty as investors
@@ -275,13 +271,13 @@ def generate_statistics_section(summaries: dict) -> str:
     stats_cards = ""
 
     budget_types = [
-        ('All_Budgets', 'All Budgets', '📊'),
-        ('Full_Budgets', 'Full Budgets', '📋'),
-        ('Interim_Budgets', 'Interim Budgets', '📝'),
-        ('Post_Election_Budgets', 'Post-Election', '🗳️')
+        ('All_Budgets', 'All Budgets'),
+        ('Full_Budgets', 'Full Budgets'),
+        ('Interim_Budgets', 'Interim Budgets'),
+        ('Post_Election_Budgets', 'Post-Election')
     ]
 
-    for key, label, icon in budget_types:
+    for key, label in budget_types:
         if key not in summaries:
             continue
 
@@ -299,7 +295,6 @@ def generate_statistics_section(summaries: dict) -> str:
         stats_cards += f"""
         <div class="stat-card">
             <div class="stat-header">
-                <span class="stat-icon">{icon}</span>
                 <span class="stat-title">{label}</span>
                 <span class="stat-count">n={count}</span>
             </div>
@@ -381,7 +376,6 @@ def generate_recommendations() -> str:
 
         <div class="recommendation-grid">
             <div class="recommendation-card">
-                <div class="rec-icon">💡</div>
                 <h4>For Investors</h4>
                 <ul>
                     <li>Consider increasing hedging positions 3-4 weeks before budget</li>
@@ -391,7 +385,6 @@ def generate_recommendations() -> str:
             </div>
 
             <div class="recommendation-card">
-                <div class="rec-icon">📈</div>
                 <h4>For Traders</h4>
                 <ul>
                     <li>The 2-3 week window before budget shows highest volatility buildup</li>
@@ -401,7 +394,6 @@ def generate_recommendations() -> str:
             </div>
 
             <div class="recommendation-card">
-                <div class="rec-icon">🎯</div>
                 <h4>For Risk Managers</h4>
                 <ul>
                     <li>Factor in average 15% VIX increase when planning pre-budget exposure</li>
@@ -450,13 +442,14 @@ def get_css_styles() -> str:
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-light);
+            background-color: var(--bg-white);
             color: var(--text-dark);
             line-height: 1.6;
+            font-size: 11pt;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -465,30 +458,29 @@ def get_css_styles() -> str:
         .report-header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
-            padding: 60px 40px;
-            margin-bottom: 40px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            padding: 50px 40px;
+            margin-bottom: 30px;
+            border-radius: 8px;
         }
 
         .report-header h1 {
-            font-size: 2.5rem;
+            font-size: 28pt;
             font-weight: 700;
             margin-bottom: 10px;
             letter-spacing: -0.5px;
         }
 
         .report-header .subtitle {
-            font-size: 1.25rem;
+            font-size: 14pt;
             opacity: 0.9;
             margin-bottom: 20px;
         }
 
         .report-header .meta {
             display: flex;
-            gap: 30px;
-            font-size: 0.9rem;
-            opacity: 0.8;
+            gap: 40px;
+            font-size: 10pt;
+            opacity: 0.9;
         }
 
         .report-header .meta-item {
@@ -500,51 +492,38 @@ def get_css_styles() -> str:
         /* Section Styles */
         section {
             background: var(--bg-white);
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 25px;
         }
 
         section h2 {
             color: var(--primary-color);
-            font-size: 1.75rem;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
+            font-size: 18pt;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
             border-bottom: 3px solid var(--accent-color);
         }
 
         /* Executive Summary */
         .summary-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .summary-card {
             background: var(--bg-light);
-            border-radius: 10px;
-            padding: 25px;
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .summary-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
         }
 
         .summary-card.highlight {
             background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
             border: 2px solid var(--accent-color);
-        }
-
-        .card-icon {
-            font-size: 2.5rem;
-            line-height: 1;
         }
 
         .card-content {
@@ -553,21 +532,22 @@ def get_css_styles() -> str:
         }
 
         .card-label {
-            font-size: 0.85rem;
+            font-size: 9pt;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .card-value {
-            font-size: 2rem;
+            font-size: 24pt;
             font-weight: 700;
             line-height: 1.2;
         }
 
         .card-subtitle {
-            font-size: 0.9rem;
+            font-size: 9pt;
             color: var(--text-muted);
             margin-top: 5px;
         }
@@ -578,53 +558,50 @@ def get_css_styles() -> str:
 
         /* Key Insight Box */
         .key-insight {
-            background: linear-gradient(135deg, #fffaf0 0%, #fefcbf 100%);
-            border-left: 5px solid var(--warning-color);
-            padding: 25px 30px;
-            border-radius: 0 10px 10px 0;
+            background: #fffbeb;
+            border-left: 4px solid var(--warning-color);
+            padding: 20px 25px;
+            border-radius: 0 8px 8px 0;
         }
 
         .key-insight h3 {
             color: var(--warning-color);
             margin-bottom: 10px;
-            font-size: 1.1rem;
+            font-size: 12pt;
+            font-weight: 700;
         }
 
         .key-insight p {
-            font-size: 1.05rem;
+            font-size: 11pt;
             color: var(--text-dark);
         }
 
         /* Key Findings */
         .finding-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
 
         .finding-card {
             display: flex;
-            gap: 20px;
-            padding: 25px;
+            gap: 15px;
+            padding: 20px;
             background: var(--bg-light);
-            border-radius: 10px;
-            transition: transform 0.2s;
-        }
-
-        .finding-card:hover {
-            transform: translateX(5px);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
         .finding-number {
-            width: 45px;
-            height: 45px;
+            width: 36px;
+            height: 36px;
             background: var(--accent-color);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 14pt;
             font-weight: 700;
             flex-shrink: 0;
         }
@@ -632,58 +609,58 @@ def get_css_styles() -> str:
         .finding-content h4 {
             color: var(--primary-color);
             margin-bottom: 8px;
-            font-size: 1.1rem;
+            font-size: 11pt;
         }
 
         .finding-content p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 10pt;
         }
 
         /* Data Table */
         .table-container {
             overflow-x: auto;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            font-size: 10pt;
         }
 
         .data-table th {
             background: var(--primary-color);
             color: white;
-            padding: 15px 12px;
+            padding: 12px 10px;
             text-align: center;
             font-weight: 600;
             white-space: nowrap;
         }
 
         .data-table td {
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .data-table tbody tr:hover {
+        .data-table tbody tr:nth-child(even) {
             background: var(--bg-light);
         }
 
         .data-table .row-interim {
-            background: #fef3c7;
+            background: #fef3c7 !important;
         }
 
         .data-table .row-post-election {
-            background: #dbeafe;
+            background: #dbeafe !important;
         }
 
         .badge {
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 8pt;
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -700,17 +677,17 @@ def get_css_styles() -> str:
             display: flex;
             gap: 25px;
             justify-content: center;
-            padding-top: 15px;
-            font-size: 0.85rem;
+            padding-top: 10px;
+            font-size: 9pt;
             color: var(--text-muted);
         }
 
         .legend-dot {
             display: inline-block;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin-right: 6px;
+            margin-right: 5px;
         }
 
         .legend-dot.high { background: var(--danger-color); }
@@ -720,48 +697,46 @@ def get_css_styles() -> str:
         /* Statistics Section */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
         }
 
         .stat-card {
             background: var(--bg-light);
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
         .stat-header {
             background: var(--primary-color);
             color: white;
-            padding: 15px 20px;
+            padding: 12px 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .stat-icon {
-            font-size: 1.5rem;
+            justify-content: space-between;
         }
 
         .stat-title {
             font-weight: 600;
-            flex-grow: 1;
+            font-size: 10pt;
         }
 
         .stat-count {
-            font-size: 0.8rem;
+            font-size: 9pt;
             opacity: 0.8;
         }
 
         .stat-body {
-            padding: 20px;
+            padding: 15px;
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px solid var(--border-color);
+            font-size: 10pt;
         }
 
         .stat-row:last-child {
@@ -777,65 +752,67 @@ def get_css_styles() -> str:
             color: var(--primary-color);
         }
 
-        /* Visualizations */
+        /* Visualizations - Full Width Charts */
         .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 30px;
         }
 
         .chart-card {
             background: var(--bg-light);
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 25px;
+            border: 1px solid var(--border-color);
+            page-break-inside: avoid;
         }
 
         .chart-card h3 {
             color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-size: 14pt;
         }
 
         .chart-description {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 10pt;
             margin-bottom: 20px;
         }
 
         .chart-image {
             text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
         }
 
         .chart-image img {
+            width: 100%;
             max-width: 100%;
             height: auto;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
         }
 
         /* Recommendations */
         .recommendation-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
         .recommendation-card {
             background: var(--bg-light);
-            border-radius: 10px;
-            padding: 25px;
-        }
-
-        .rec-icon {
-            font-size: 2rem;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
         }
 
         .recommendation-card h4 {
             color: var(--primary-color);
             margin-bottom: 15px;
-            font-size: 1.1rem;
+            font-size: 12pt;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
         }
 
         .recommendation-card ul {
@@ -844,13 +821,14 @@ def get_css_styles() -> str:
 
         .recommendation-card li {
             padding: 8px 0;
-            padding-left: 25px;
+            padding-left: 20px;
             position: relative;
-            color: var(--text-muted);
+            color: var(--text-dark);
+            font-size: 10pt;
         }
 
         .recommendation-card li:before {
-            content: "→";
+            content: ">";
             position: absolute;
             left: 0;
             color: var(--accent-color);
@@ -858,31 +836,35 @@ def get_css_styles() -> str:
         }
 
         .disclaimer {
-            background: #fed7d7;
+            background: #fef2f2;
             border-left: 4px solid var(--danger-color);
-            padding: 20px 25px;
+            padding: 15px 20px;
             border-radius: 0 8px 8px 0;
-            font-size: 0.9rem;
-            color: #742a2a;
+            font-size: 9pt;
+            color: #7f1d1d;
         }
 
         /* Footer */
         .report-footer {
             text-align: center;
-            padding: 30px;
+            padding: 25px;
             color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .report-footer a {
-            color: var(--accent-color);
-            text-decoration: none;
+            font-size: 9pt;
+            border-top: 1px solid var(--border-color);
         }
 
         /* Print Styles */
         @media print {
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+
             body {
                 background: white;
+                font-size: 10pt;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
             .container {
@@ -890,25 +872,96 @@ def get_css_styles() -> str:
                 padding: 0;
             }
 
-            section {
-                box-shadow: none;
-                border: 1px solid #ddd;
-                page-break-inside: avoid;
+            .report-header {
+                padding: 30px;
+                margin-bottom: 20px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
-            .chart-grid {
-                grid-template-columns: 1fr;
+            .report-header h1 {
+                font-size: 22pt;
+            }
+
+            section {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+                margin-bottom: 15px;
+                padding: 20px;
+            }
+
+            section h2 {
+                font-size: 14pt;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .card-value {
+                font-size: 18pt;
+            }
+
+            .finding-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .recommendation-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .chart-card {
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+
+            .chart-image img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .badge {
+                border: 1px solid currentColor;
+            }
+
+            .data-table th {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .stat-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .recommendation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
             .report-header {
-                padding: 40px 25px;
+                padding: 30px 20px;
             }
 
             .report-header h1 {
-                font-size: 1.75rem;
+                font-size: 20pt;
             }
 
             .report-header .meta {
@@ -917,17 +970,12 @@ def get_css_styles() -> str:
             }
 
             section {
-                padding: 25px;
-            }
-
-            .chart-grid {
-                grid-template-columns: 1fr;
+                padding: 20px;
             }
 
             .summary-grid,
             .finding-grid,
-            .stat-grid,
-            .recommendation-grid {
+            .stat-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -957,15 +1005,12 @@ def generate_html_report(results_df: pd.DataFrame, summaries: dict) -> str:
                 <p class="subtitle">Comprehensive Analysis of Volatility Patterns Before Union Budget Announcements</p>
                 <div class="meta">
                     <div class="meta-item">
-                        <span>📅</span>
                         <span>Analysis Period: 2015 - 2025</span>
                     </div>
                     <div class="meta-item">
-                        <span>📊</span>
                         <span>Budgets Analyzed: {len(results_df)}</span>
                     </div>
                     <div class="meta-item">
-                        <span>🕐</span>
                         <span>Generated: {report_date} at {report_time}</span>
                     </div>
                 </div>
@@ -996,8 +1041,8 @@ def generate_html_report(results_df: pd.DataFrame, summaries: dict) -> str:
             </section>
 
             <footer class="report-footer">
-                <p>India VIX Pre-Budget Analysis Report | Generated using Python & Yahoo Finance Data</p>
-                <p>For questions or feedback, please contact your data analytics team.</p>
+                <p>India VIX Pre-Budget Analysis Report</p>
+                <p>Generated using Python and Yahoo Finance Data</p>
             </footer>
         </div>
     </body>
@@ -1041,6 +1086,7 @@ def main():
         print_section("REPORT GENERATION COMPLETE")
         print_progress(f"Executive HTML report saved to: {report_path}")
         print_progress("Open the HTML file in any web browser to view the report.")
+        print_progress("To save as PDF: Open in Chrome/Edge -> Press Ctrl+P -> Save as PDF")
 
         # Get absolute path for user convenience
         abs_path = os.path.abspath(report_path)
